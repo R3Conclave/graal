@@ -519,6 +519,17 @@ static void set_cpufeatures(CPUFeatures *features, CpuidInfo *_cpuid_info)
   }
 }
 
+// CONCLAVE start
+/*
+ * CPUID is not available inside an SGX enclave.
+ * If a clean method that we could use to determine whether or not we were inside
+ * an enclave, we could use this to steer feature detection.
+ */
+int cpuid_available() {
+  return 0;
+}
+// CONCLAVE end
+
 /*
 * Extracts the CPU features by using cpuid.h.
 * Note: This function is implemented in C as cpuid.h
@@ -528,6 +539,26 @@ static void set_cpufeatures(CPUFeatures *features, CpuidInfo *_cpuid_info)
 void determineCPUFeatures(CPUFeatures *features)
 {
 
+  // CONCLAVE start
+  // Return a minimal hard coded set of features
+  // TODO: Find a way to safely perform proper feature detection. Alternatively, find a way to
+  // determine if we are in an enclave and steer feature detection appropriately.
+  if (!cpuid_available()) {
+
+    // Required by graalvm (will not work without)
+    features->fSSE = 1;
+    features->fSSE2 = 1;
+
+    // Additional features supported by all processors that also support the above (may as well include them!)
+    features->fCX8 = 1;
+    features->fCMOV = 1;
+    features->fFXSR = 1;
+    features->fMMX = 1;
+    features->fTSC = 1;
+
+    return;
+  }
+  // CONCLAVE end
 
   CpuidInfo cpuid_info_data = {0};
   CpuidInfo *_cpuid_info = &cpuid_info_data;

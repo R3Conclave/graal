@@ -49,7 +49,9 @@ import java.awt.GraphicsEnvironment;
 import java.util.Optional;
 
 @Platforms({InternalPlatform.PLATFORM_JNI.class})
-@AutomaticFeature
+// CONCLAVE start
+//@AutomaticFeature
+// CONCLAVE end
 @SuppressWarnings({"unused"})
 public class JNIRegistrationAwt extends JNIRegistrationUtil implements Feature {
 

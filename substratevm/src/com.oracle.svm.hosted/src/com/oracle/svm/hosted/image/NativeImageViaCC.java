@@ -113,8 +113,12 @@ public abstract class NativeImageViaCC extends NativeImage {
                     additionalPreOptions.add("-Wl,--dynamic-list");
                     additionalPreOptions.add("-Wl," + exportedSymbolsPath.toAbsolutePath());
 
-                    // Drop global symbols in linked static libraries: not covered by --dynamic-list
-                    additionalPreOptions.add("-Wl,--exclude-libs,ALL");
+                    // CONCLAVE start
+                    if (!SubstrateOptions.ExportStaticSymbols.getValue()) {
+                        // Drop global symbols in linked static libraries: not covered by --dynamic-list
+                        additionalPreOptions.add("-Wl,--exclude-libs,ALL");
+                    }
+                    // CONCLAVE end
                 } catch (IOException e) {
                     VMError.shouldNotReachHere();
                 }
@@ -143,7 +147,11 @@ public abstract class NativeImageViaCC extends NativeImage {
                     }
                     break;
                 case SHARED_LIBRARY:
-                    cmd.add("-shared");
+                    // CONCLAVE start
+                    if (!SubstrateOptions.UseStaticLinking.getValue()) {
+                        cmd.add("-shared");
+                    }
+                    // CONCLAVE end
                     break;
                 default:
                     VMError.shouldNotReachHere();
