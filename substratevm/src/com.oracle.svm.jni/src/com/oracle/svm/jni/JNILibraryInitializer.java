@@ -50,6 +50,7 @@ import com.oracle.svm.core.jdk.PlatformNativeLibrarySupport;
 import com.oracle.svm.core.util.ImageHeapMap;
 import com.oracle.svm.jni.functions.JNIFunctionTables;
 import com.oracle.svm.jni.nativeapi.JNIJavaVM;
+import com.oracle.svm.core.SubstrateOptions;
 
 interface JNIOnLoadFunctionPointer extends CFunctionPointer {
     @InvokeCFunctionPointer
@@ -113,6 +114,12 @@ public class JNILibraryInitializer implements NativeLibrarySupport.LibraryInitia
 
     @Override
     public void initialize(PlatformNativeLibrarySupport.NativeLibrary lib) {
+        // CONCLAVE start
+        if (SubstrateOptions.ExcludeLoadingNetwork.hasBeenSet() && SubstrateOptions.ExcludeLoadingNetwork.getValue()) {
+            return;
+        }
+        // CONCLAVE end
+
         String libName = lib.getCanonicalIdentifier();
         PointerBase onLoadFunction;
         if (lib.isBuiltin()) {

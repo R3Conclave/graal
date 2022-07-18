@@ -612,10 +612,14 @@ public final class NativeLibraries {
             return false;
         }
         for (CLibrary lib : annotated) {
-            if (lib.requireStatic()) {
-                addStaticNonJniLibrary(lib.value(), lib.dependsOn());
-            } else {
-                addDynamicNonJniLibrary(lib.value());
+            // CONCLAVE start
+            if (!OptionUtils.flatten(",", SubstrateOptions.ExcludeLibraries.getValue()).contains(lib.value())) {
+                if (lib.requireStatic()) {
+                    addStaticNonJniLibrary(lib.value(), lib.dependsOn());
+                } else {
+                    addDynamicNonJniLibrary(lib.value());
+                }
+                // CONCLAVE end
             }
         }
         annotated.clear();

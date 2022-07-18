@@ -451,6 +451,20 @@ public class SubstrateOptions {
     @Option(help = "Provide java.lang.Terminator exit handlers", type = User)//
     public static final HostedOptionKey<Boolean> InstallExitHandlers = new HostedOptionKey<>(false);
 
+    // CONCLAVE start
+    @Option(help = "Use static linking", type = OptionType.Expert)
+    public static final HostedOptionKey<Boolean> UseStaticLinking = new HostedOptionKey<>(false);
+
+    @Option(help = "Export symbols in linked static libraries", type = OptionType.Expert)
+    public static final HostedOptionKey<Boolean> ExportStaticSymbols = new HostedOptionKey<>(false);
+
+    @Option(help = "Default libraries to be excluded by the linker (list of comma-separated library names, i.e., dl,pthreads)", type = OptionType.Expert)
+    public static final HostedOptionKey<LocatableMultiOptionValue.Strings> ExcludeLibraries = new HostedOptionKey<>(new LocatableMultiOptionValue.Strings());
+
+    @Option(help = "Exclude loading net library", type = OptionType.Expert)
+    public static final HostedOptionKey<Boolean> ExcludeLoadingNetwork = new HostedOptionKey<>(false);
+    // CONCLAVE end
+
     @Option(help = "When set to true, the image generator verifies that the image heap does not contain a home directory as a substring", type = User)//
     public static final HostedOptionKey<Boolean> DetectUserDirectoriesInImageHeap = new HostedOptionKey<>(false);
 
